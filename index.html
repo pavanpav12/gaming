@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Stackly Gaming — Level Up Your Game Universe</title>
+
+<!-- AOS CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:ital,wght@0,300;0,400;0,600;0,900;1,300&display=swap" rel="stylesheet" />
+
+<style>
+/* ==============================  RESET & ROOT  ============================== */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --neon:#00FFB2;--neon2:#FF003C;--neon3:#7C3AED;
+  --dark:#080B14;--dark2:#0D1121;--dark3:#121828;
+  --text:#E8EAF2;--muted:#6B7280;--card:#0F1523;
+  --border:rgba(0,255,178,0.15);--border2:rgba(0,255,178,0.35);
+}
+html{scroll-behavior:smooth}
+body{background:var(--dark);color:var(--text);font-family:'Exo 2',sans-serif;overflow-x:hidden;line-height:1.6}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer}
+ul{list-style:none}
+img{display:block;max-width:100%}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--dark)}
+::-webkit-scrollbar-thumb{background:rgba(0,255,178,0.25);border-radius:10px}
+
+/* ============================== NAVBAR ============================== */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 48px;height:68px;
+  background:rgba(8,11,20,0.90);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  transition:box-shadow 0.3s;
+}
+nav.scrolled{box-shadow:0 4px 40px rgba(0,0,0,0.7)}
+.logo{font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;letter-spacing:3px;color:var(--neon);text-shadow:0 0 20px rgba(0,255,178,0.4)}
+.logo span{color:#fff}
+.nav-links{display:flex;gap:36px}
+.nav-links a{font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);position:relative;transition:color 0.25s;padding-bottom:4px}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:var(--neon);transform:scaleX(0);transform-origin:right;transition:transform 0.3s ease}
+.nav-links a:hover{color:var(--neon)}
+.nav-links a:hover::after{transform:scaleX(1);transform-origin:left}
+.nav-right{display:flex;align-items:center;gap:14px}
+.btn-ghost{background:none;border:1px solid rgba(0,255,178,0.3);color:var(--neon);padding:9px 24px;font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;transition:all 0.25s}
+.btn-ghost:hover{background:rgba(0,255,178,0.08);border-color:var(--neon);box-shadow:0 0 16px rgba(0,255,178,0.15)}
+.btn-primary{background:var(--neon);border:none;color:#000;padding:9px 26px;font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;transition:all 0.25s}
+.btn-primary:hover{background:#00e0a0;box-shadow:0 0 24px rgba(0,255,178,0.4);transform:translateY(-1px)}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none}
+.hamburger span{display:block;width:24px;height:2px;background:var(--neon);transition:all 0.3s}
+
+/* ============================== HERO ============================== */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;padding:120px 48px 80px;overflow:hidden}
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 65% 90% at 72% 50%,rgba(124,58,237,0.18) 0%,transparent 68%),
+    radial-gradient(ellipse 45% 55% at 18% 25%,rgba(0,255,178,0.08) 0%,transparent 60%),
+    linear-gradient(175deg,#09111f 0%,#080B14 60%,#060810 100%);
+}
+.hero-bg-img{
+  position:absolute;inset:0;
+  background-image:url('https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1600&q=80');
+  background-size:cover;background-position:center right;
+  opacity:0.07;
+}
+.grid-overlay{position:absolute;inset:0;background-image:linear-gradient(rgba(0,255,178,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,178,0.025) 1px,transparent 1px);background-size:64px 64px}
+.scanlines{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.04) 3px,rgba(0,0,0,0.04) 4px)}
+.hero-content{position:relative;z-index:2;max-width:600px}
+.hero-badge{display:inline-flex;align-items:center;gap:10px;background:rgba(0,255,178,0.07);border:1px solid rgba(0,255,178,0.25);padding:7px 18px;margin-bottom:32px;font-size:11px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--neon)}
+.badge-dot{width:7px;height:7px;border-radius:50%;background:var(--neon);animation:livepulse 2s infinite}
+@keyframes livepulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,255,178,0.4)}50%{opacity:0.7;box-shadow:0 0 0 7px rgba(0,255,178,0)}}
+.hero h1{font-family:'Rajdhani',sans-serif;font-size:82px;font-weight:700;line-height:0.92;text-transform:uppercase;letter-spacing:-1px;margin-bottom:28px}
+.hero h1 .line1{display:block;color:#fff}
+.hero h1 .line2{display:block;color:var(--neon);text-shadow:0 0 50px rgba(0,255,178,0.5),0 0 100px rgba(0,255,178,0.2)}
+.hero h1 .line3{display:block;color:rgba(255,255,255,0.18);-webkit-text-stroke:1px rgba(255,255,255,0.12)}
+.hero-sub{font-size:16px;font-weight:300;font-style:italic;color:rgba(232,234,242,0.55);max-width:460px;margin-bottom:40px;line-height:1.8}
+.hero-ctas{display:flex;gap:16px;align-items:center;margin-bottom:56px;flex-wrap:wrap}
+.btn-xl{background:var(--neon);color:#000;border:none;padding:15px 40px;font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;transition:all 0.25s;display:flex;align-items:center;gap:10px}
+.btn-xl:hover{background:#00e0a0;box-shadow:0 0 36px rgba(0,255,178,0.4);transform:translateY(-2px)}
+.btn-xl-ghost{background:none;color:var(--text);border:1px solid rgba(255,255,255,0.18);padding:14px 34px;font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:600;letter-spacing:2px;text-transform:uppercase;transition:all 0.25s}
+.btn-xl-ghost:hover{border-color:rgba(255,255,255,0.45);background:rgba(255,255,255,0.04)}
+.hero-stats{display:flex;gap:44px}
+.hero-stat-divider{width:1px;background:rgba(0,255,178,0.15)}
+.hero-stat-val{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:#fff;letter-spacing:1px}
+.hero-stat-val span{color:var(--neon)}
+.hero-stat-label{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:2px}
+
+/* Hero Visual */
+.hero-visual{position:absolute;right:48px;top:50%;transform:translateY(-50%);width:440px;height:520px;display:flex;align-items:center;justify-content:center}
+.hero-card-stack{position:relative;width:420px;height:500px}
+.game-card{position:absolute;border:1px solid var(--border);overflow:hidden;transition:all 0.4s cubic-bezier(0.175,0.885,0.32,1.275)}
+.gc-back{width:300px;height:400px;top:90px;left:90px;background:linear-gradient(135deg,#1a0a2e,#0f1523);transform:rotate(10deg);opacity:0.4}
+.gc-mid{width:310px;height:410px;top:55px;left:55px;background:linear-gradient(135deg,#0d1a2e,#0f1523);transform:rotate(5deg);opacity:0.65}
+.gc-front{width:320px;height:420px;top:20px;left:20px;background:var(--card)}
+.gc-front:hover{transform:rotate(-3deg) translateY(-12px) scale(1.02);box-shadow:0 30px 80px rgba(0,0,0,0.6),0 0 40px rgba(0,255,178,0.12);border-color:var(--border2)}
+.gc-img{width:100%;height:220px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.gc-img img{width:100%;height:100%;object-fit:cover;filter:brightness(0.65) saturate(1.3);transition:transform 0.5s,filter 0.3s}
+.gc-front:hover .gc-img img{transform:scale(1.07);filter:brightness(0.75) saturate(1.5)}
+.gc-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 25%,rgba(124,58,237,0.35),transparent 65%);pointer-events:none}
+.gc-badge{position:absolute;top:14px;left:14px;background:var(--neon2);color:#fff;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 10px}
+.gc-body{padding:18px 20px}
+.gc-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:#fff;letter-spacing:0.5px;margin-bottom:6px}
+.gc-genre{font-size:11px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px}
+.gc-stats{display:flex;gap:20px}
+.gc-stat{text-align:center}
+.gc-stat-val{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--neon)}
+.gc-stat-label{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.gc-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.gc-price{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--neon)}
+.gc-btn{background:var(--neon);color:#000;border:none;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:8px 20px;transition:all 0.2s}
+.gc-btn:hover{background:#00e0a0;box-shadow:0 0 14px rgba(0,255,178,0.35)}
+.particle{position:absolute;border-radius:50%;pointer-events:none;opacity:0;animation:floatUp 8s infinite}
+@keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(0)}10%{opacity:0.6;transform:translateY(-20px) scale(1)}90%{opacity:0.2;transform:translateY(-200px) scale(0.5)}100%{opacity:0;transform:translateY(-240px) scale(0)}}
+
+/* ============================== SECTIONS ============================== */
+.section{padding:80px 48px}
+.section-alt{background:var(--dark2)}
+.section-header{margin-bottom:44px}
+.section-tag{font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--neon);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.section-title{font-family:'Rajdhani',sans-serif;font-size:44px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#fff;line-height:1}
+.section-title span{color:var(--neon)}
+
+/* ============================== TOURNAMENT BANNER ============================== */
+.tournament-banner{
+  margin:0 48px;padding:0;
+  border:1px solid rgba(124,58,237,0.28);
+  display:flex;align-items:stretch;
+  position:relative;overflow:hidden;
+}
+.tb-img{
+  width:380px;flex-shrink:0;position:relative;overflow:hidden;
+}
+.tb-img img{width:100%;height:100%;object-fit:cover;filter:brightness(0.5) saturate(1.4)}
+.tb-img-overlay{position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(13,17,33,0.95) 100%)}
+.tb-content{
+  flex:1;padding:44px 56px;
+  background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(0,255,178,0.05));
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:28px;
+  position:relative;
+}
+.tb-lines{position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 12px,rgba(124,58,237,0.04) 12px,rgba(124,58,237,0.04) 13px)}
+.tb-left{position:relative;z-index:1}
+.tb-tag{font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#A78BFA;margin-bottom:10px}
+.tb-title{font-family:'Rajdhani',sans-serif;font-size:38px;font-weight:700;text-transform:uppercase;color:#fff;letter-spacing:1.5px;margin-bottom:8px}
+.tb-sub{font-size:14px;color:rgba(232,234,242,0.5)}
+.tb-right{position:relative;z-index:1;text-align:right}
+.tb-prize-label{font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.tb-prize{font-family:'Rajdhani',sans-serif;font-size:56px;font-weight:700;color:#FFD700;line-height:1;margin-bottom:16px;text-shadow:0 0 30px rgba(255,215,0,0.3)}
+.btn-register{background:#A78BFA;color:#fff;border:none;padding:13px 34px;font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;transition:all 0.25s}
+.btn-register:hover{background:#8B5CF6;box-shadow:0 0 24px rgba(139,92,246,0.4);transform:translateY(-2px)}
+
+/* ============================== FEATURED GAMES ============================== */
+.games-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.game-tile{background:var(--card);border:1px solid var(--border);overflow:hidden;position:relative;transition:transform 0.3s cubic-bezier(0.175,0.885,0.32,1.275),border-color 0.3s,box-shadow 0.3s}
+.game-tile:hover{transform:translateY(-8px) scale(1.015);border-color:var(--border2);box-shadow:0 20px 50px rgba(0,0,0,0.5),0 0 20px rgba(0,255,178,0.07)}
+.tile-img{height:170px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#0a0f1e}
+.tile-img img{width:100%;height:100%;object-fit:cover;filter:brightness(0.7) saturate(1.3);transition:transform 0.4s,filter 0.3s}
+.game-tile:hover .tile-img img{transform:scale(1.1);filter:brightness(0.85) saturate(1.6)}
+.tile-overlay{position:absolute;inset:0;background:rgba(0,255,178,0.07);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s}
+.game-tile:hover .tile-overlay{opacity:1}
+.play-btn{width:54px;height:54px;background:var(--neon);color:#000;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;transform:scale(0.5);opacity:0;transition:transform 0.3s cubic-bezier(0.175,0.885,0.32,1.275),opacity 0.3s;clip-path:polygon(10% 0%,100% 0%,90% 100%,0% 100%)}
+.game-tile:hover .play-btn{transform:scale(1);opacity:1}
+.tile-body{padding:14px 16px 10px}
+.tile-name{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:6px}
+.tile-meta{display:flex;justify-content:space-between;align-items:center}
+.tile-genre{font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.tile-rating{font-size:12px;color:#FFD700;font-weight:600}
+.tile-footer{padding:10px 16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.tile-price{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--neon)}
+.tile-free{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;color:#4ADE80}
+.tile-players{font-size:11px;color:var(--muted)}
+.tag-new{position:absolute;top:12px;right:12px;background:var(--neon2);color:#fff;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 10px}
+.tag-hot{position:absolute;top:12px;right:12px;background:#FF6B00;color:#fff;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 10px}
+
+/* ============================== CATEGORIES ============================== */
+.cats-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+.cat-card{background:var(--card);border:1px solid var(--border);overflow:hidden;transition:all 0.3s;cursor:pointer;position:relative}
+.cat-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--neon);transform:scaleX(0);transition:transform 0.3s;z-index:2}
+.cat-card:hover::before{transform:scaleX(1)}
+.cat-card:hover{border-color:rgba(0,255,178,0.4);transform:translateY(-4px)}
+.cat-img-wrap{height:100px;overflow:hidden;position:relative}
+.cat-img-wrap img{width:100%;height:100%;object-fit:cover;filter:brightness(0.5) saturate(1.2);transition:transform 0.4s,filter 0.3s}
+.cat-card:hover .cat-img-wrap img{transform:scale(1.12);filter:brightness(0.65) saturate(1.5)}
+.cat-img-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(8,11,20,0.3)}
+.cat-icon-big{font-size:36px;filter:drop-shadow(0 0 8px rgba(0,255,178,0.4))}
+.cat-body{padding:12px 10px;text-align:center}
+.cat-name{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#fff;margin-bottom:3px}
+.cat-count{font-size:11px;color:var(--muted)}
+
+/* ============================== LEADERBOARD ============================== */
+.lb-wrapper{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.lb-card{background:var(--card);border:1px solid var(--border);overflow:hidden}
+.lb-header{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:rgba(0,255,178,0.02)}
+.lb-header-title{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#fff}
+.lb-header-action{font-size:11px;color:var(--neon);cursor:pointer;letter-spacing:1px;transition:opacity 0.2s}
+.lb-header-action:hover{opacity:0.7}
+.lb-row{display:flex;align-items:center;gap:14px;padding:13px 22px;border-bottom:1px solid rgba(0,255,178,0.04);transition:background 0.15s;cursor:pointer}
+.lb-row:hover{background:rgba(0,255,178,0.03)}
+.lb-row:last-child{border-bottom:none}
+.lb-rank{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;width:26px;text-align:center;flex-shrink:0}
+.rank-1{color:#FFD700;text-shadow:0 0 10px rgba(255,215,0,0.4)}
+.rank-2{color:#C0C0C0}
+.rank-3{color:#CD7F32}
+.rank-other{color:var(--muted)}
+.lb-avatar{width:38px;height:38px;border-radius:50%;overflow:hidden;flex-shrink:0;border:1px solid var(--border)}
+.lb-avatar img{width:100%;height:100%;object-fit:cover}
+.lb-avatar-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:18px}
+.lb-info{flex:1;min-width:0}
+.lb-name{font-size:14px;font-weight:600;color:#fff;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-game{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-score{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;color:var(--neon);flex-shrink:0}
+.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#4ADE80;margin-right:6px;animation:livepulse 2s infinite}
+
+/* ============================== DEALS ============================== */
+.deals-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.deal-card{background:var(--card);border:1px solid var(--border);overflow:hidden;position:relative;transition:all 0.3s}
+.deal-card:hover{border-color:var(--border2);transform:translateY(-5px);box-shadow:0 20px 50px rgba(0,0,0,0.4)}
+.deal-img-wrap{height:160px;overflow:hidden;position:relative}
+.deal-img-wrap img{width:100%;height:100%;object-fit:cover;filter:brightness(0.65) saturate(1.3);transition:transform 0.4s,filter 0.3s}
+.deal-card:hover .deal-img-wrap img{transform:scale(1.08);filter:brightness(0.8) saturate(1.5)}
+.deal-badge{position:absolute;top:12px;left:12px;background:var(--neon2);color:#fff;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;padding:5px 12px;z-index:1}
+.deal-body{padding:16px 18px}
+.deal-name{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:4px}
+.deal-genre{font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+.deal-prices{display:flex;gap:12px;align-items:baseline}
+.deal-old{font-size:13px;color:var(--muted);text-decoration:line-through}
+.deal-new{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--neon)}
+.deal-footer{padding:12px 18px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.deal-rating{font-size:12px;color:#FFD700;font-weight:600}
+.deal-btn{background:none;border:1px solid var(--border2);color:var(--neon);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:6px 16px;transition:all 0.2s}
+.deal-btn:hover{background:var(--neon);color:#000}
+
+/* ============================== TESTIMONIALS (NEW) ============================== */
+.testimonials-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:28px;
+  margin-top:20px;
+}
+.testimonial-card{
+  background:rgba(15,21,35,0.75);
+  backdrop-filter:blur(6px);
+  border:1px solid var(--border);
+  border-radius:32px;
+  padding:28px 24px;
+  transition:all 0.3s ease;
+  position:relative;
+  overflow:hidden;
+}
+.testimonial-card:hover{
+  border-color:var(--neon);
+  transform:translateY(-6px);
+  box-shadow:0 20px 35px -12px rgba(0,255,178,0.2);
+}
+.quote-icon{
+  font-size:42px;
+  line-height:1;
+  color:var(--neon);
+  opacity:0.5;
+  margin-bottom:20px;
+}
+.testimonial-text{
+  font-size:15px;
+  font-style:italic;
+  color:rgba(232,234,242,0.85);
+  margin-bottom:24px;
+  line-height:1.65;
+}
+.testimonial-author{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-top:8px;
+}
+.author-avatar{
+  width:52px;
+  height:52px;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid var(--neon);
+}
+.author-info h4{
+  font-family:'Rajdhani',sans-serif;
+  font-size:16px;
+  font-weight:700;
+  color:#fff;
+  letter-spacing:0.5px;
+}
+.author-info p{
+  font-size:11px;
+  color:var(--neon);
+  letter-spacing:1px;
+  text-transform:uppercase;
+  margin-top:4px;
+}
+.testimonial-stars{
+  color:#FFD700;
+  font-size:12px;
+  margin-top:12px;
+  letter-spacing:2px;
+}
+
+/* ============================== FAQ ACCORDION (NEW) ============================== */
+.faq-section{
+  max-width:1000px;
+  margin:0 auto;
+  padding:0 20px;
+}
+.faq-item{
+  background:rgba(15,21,35,0.7);
+  backdrop-filter:blur(4px);
+  border:1px solid var(--border);
+  border-radius:24px;
+  margin-bottom:18px;
+  overflow:hidden;
+  transition:all 0.2s;
+}
+.faq-item:hover{
+  border-color:var(--border2);
+}
+.faq-question{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:20px 28px;
+  cursor:pointer;
+  font-family:'Rajdhani',sans-serif;
+  font-size:17px;
+  font-weight:600;
+  color:#fff;
+  letter-spacing:0.5px;
+}
+.faq-question i{
+  color:var(--neon);
+  font-size:20px;
+  transition:transform 0.3s ease;
+}
+.faq-answer{
+  max-height:0;
+  overflow:hidden;
+  transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1);
+  padding:0 28px;
+  color:rgba(232,234,242,0.7);
+  font-size:14px;
+  line-height:1.7;
+  border-top:0px solid transparent;
+}
+.faq-item.active .faq-answer{
+  max-height:280px;
+  padding:0 28px 24px 28px;
+  border-top:1px solid rgba(0,255,178,0.2);
+}
+.faq-item.active .faq-question i{
+  transform:rotate(180deg);
+}
+
+/* ============================== NEWSLETTER ============================== */
+.newsletter-section{padding:80px 48px;text-align:center;position:relative;overflow:hidden}
+.nl-bg{position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1511512578047-dfb367046420?w=1600&q=80');background-size:cover;background-position:center;opacity:0.08}
+.nl-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(0,255,178,0.06))}
+.nl-content{position:relative;z-index:1}
+.newsletter-title{font-family:'Rajdhani',sans-serif;font-size:42px;font-weight:700;text-transform:uppercase;color:#fff;margin-bottom:10px}
+.newsletter-title span{color:var(--neon)}
+.newsletter-sub{font-size:15px;color:var(--muted);margin-bottom:36px;max-width:480px;margin-left:auto;margin-right:auto}
+.newsletter-form{display:flex;gap:0;max-width:500px;margin:0 auto}
+.newsletter-input{flex:1;padding:14px 20px;background:rgba(255,255,255,0.05);border:1px solid rgba(0,255,178,0.2);border-right:none;color:#fff;font-family:'Exo 2',sans-serif;font-size:14px;outline:none;transition:border-color 0.25s}
+.newsletter-input::placeholder{color:var(--muted)}
+.newsletter-input:focus{border-color:var(--neon)}
+.newsletter-btn{background:var(--neon);color:#000;border:none;padding:14px 30px;font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;transition:all 0.25s}
+.newsletter-btn:hover{background:#00e0a0;box-shadow:0 0 20px rgba(0,255,178,0.3)}
+
+/* ============================== FOOTER ============================== */
+footer{background:#040710;border-top:1px solid var(--border);padding:60px 48px 32px}
+.footer-grid{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
+.footer-logo{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:var(--neon);letter-spacing:3px;margin-bottom:14px}
+.footer-logo span{color:#fff}
+.footer-desc{font-size:13px;color:var(--muted);line-height:1.9;max-width:270px;margin-bottom:24px}
+.social-row{display:flex;gap:10px}
+.social-btn{width:38px;height:38px;background:none;border:1px solid var(--border);color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;transition:all 0.25s}
+.social-btn:hover{border-color:var(--neon);color:var(--neon);box-shadow:0 0 12px rgba(0,255,178,0.2)}
+.footer-col-title{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#fff;margin-bottom:20px}
+.footer-links li{margin-bottom:12px}
+.footer-links a{font-size:13px;color:var(--muted);transition:color 0.2s}
+.footer-links a:hover{color:var(--neon)}
+.footer-bottom{padding-top:28px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-copy,.footer-made{font-size:12px;color:var(--muted)}
+
+/* ============================== RESPONSIVE ============================== */
+@media(max-width:1100px){
+  .hero-visual{display:none}
+  .hero h1{font-size:60px}
+  .games-grid{grid-template-columns:repeat(2,1fr)}
+  .lb-wrapper{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .tournament-banner{flex-direction:column}
+  .tb-img{width:100%;height:200px}
+  .testimonials-grid{grid-template-columns:repeat(2,1fr)}
+  .deals-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:768px){
+  nav{padding:0 24px}
+  .nav-links,.nav-right{display:none}
+  .hamburger{display:flex}
+  .mobile-menu{display:none;position:fixed;top:68px;left:0;right:0;bottom:0;background:rgba(8,11,20,0.97);z-index:999;flex-direction:column;align-items:center;justify-content:center;gap:32px}
+  .mobile-menu.open{display:flex}
+  .mobile-menu a{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text)}
+  .mobile-menu a:hover{color:var(--neon)}
+  .hero{padding:100px 24px 60px;min-height:auto}
+  .hero h1{font-size:48px}
+  .hero-stats{flex-wrap:wrap;gap:20px}
+  .section{padding:56px 24px}
+  .tournament-banner{margin:0 24px}
+  .games-grid{grid-template-columns:1fr}
+  .cats-grid{grid-template-columns:repeat(3,1fr)}
+  .deals-grid{grid-template-columns:1fr}
+  .testimonials-grid{grid-template-columns:1fr}
+  footer{padding:48px 24px 24px}
+  .footer-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== NAVBAR ===================== -->
+<nav id="navbar">
+  <div class="logo">STACK<span>LY</span></div>
+  <div class="nav-links">
+    <a href="#store">Store</a>
+    <a href="#games">Games</a>
+    <a href="#tournaments">Tournaments</a>
+    <a href="#community">Community</a>
+    <a href="#news">News</a>
+  </div>
+  <div class="nav-right">
+    <button class="btn-ghost">Sign In</button>
+    <button class="btn-primary">Play Free ▶</button>
+  </div>
+  <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#store">Store</a>
+  <a href="#games">Games</a>
+  <a href="#tournaments">Tournaments</a>
+  <a href="#community">Community</a>
+  <a href="#news">News</a>
+  <button class="btn-primary" style="margin-top:12px;padding:14px 40px;font-size:16px;">Play Free ▶</button>
+</div>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-bg-img"></div>
+  <div class="grid-overlay"></div>
+  <div class="scanlines"></div>
+  <div id="particles"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge" data-aos="fade-down" data-aos-duration="700">
+      <div class="badge-dot"></div>
+      Season 7 — Now Live
+    </div>
+    <h1>
+      <span class="line1" data-aos="fade-right" data-aos-duration="800" data-aos-delay="100">Level Up</span>
+      <span class="line2" data-aos="fade-right" data-aos-duration="800" data-aos-delay="260">Your Game</span>
+      <span class="line3" data-aos="fade-right" data-aos-duration="800" data-aos-delay="420">Universe</span>
+    </h1>
+    <p class="hero-sub" data-aos="fade-up" data-aos-duration="800" data-aos-delay="560">
+      The ultimate gaming platform. Compete, discover, and dominate. 10,000+ games, live tournaments, and a community of 2M+ players worldwide.
+    </p>
+    <div class="hero-ctas" data-aos="fade-up" data-aos-duration="700" data-aos-delay="700">
+      <button class="btn-xl"><span>▶</span> Start Playing</button>
+      <button class="btn-xl-ghost">Browse Games</button>
+    </div>
+    <div class="hero-stats" data-aos="fade-up" data-aos-duration="700" data-aos-delay="860">
+      <div><div class="hero-stat-val">2.4<span>M</span></div><div class="hero-stat-label">Players Online</div></div>
+      <div class="hero-stat-divider"></div>
+      <div><div class="hero-stat-val">10<span>K+</span></div><div class="hero-stat-label">Games Available</div></div>
+      <div class="hero-stat-divider"></div>
+      <div><div class="hero-stat-val">$<span>500K</span></div><div class="hero-stat-label">Prize Pool</div></div>
+    </div>
+  </div>
+
+  <!-- Hero Card Stack -->
+  <div class="hero-visual" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="400">
+    <div class="hero-card-stack">
+      <div class="game-card gc-back"></div>
+      <div class="game-card gc-mid"></div>
+      <div class="game-card gc-front">
+        <div class="gc-img">
+          <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&q=80" alt="Shadow Realm: Origins" loading="lazy" />
+          <div class="gc-glow"></div>
+          <div class="gc-badge">HOT</div>
+        </div>
+        <div class="gc-body">
+          <div class="gc-title">Shadow Realm: Origins</div>
+          <div class="gc-genre">Action RPG · Open World</div>
+          <div class="gc-stats">
+            <div class="gc-stat"><div class="gc-stat-val">9.4</div><div class="gc-stat-label">Rating</div></div>
+            <div class="gc-stat"><div class="gc-stat-val">1.2M</div><div class="gc-stat-label">Players</div></div>
+            <div class="gc-stat"><div class="gc-stat-val">48h</div><div class="gc-stat-label">Avg Play</div></div>
+          </div>
+        </div>
+        <div class="gc-footer">
+          <div class="gc-price">$29.99</div>
+          <button class="gc-btn">Buy Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TOURNAMENT BANNER ===================== -->
+<div class="tournament-banner" id="tournaments" data-aos="fade-up" data-aos-duration="800">
+  <div class="tb-img">
+    <img src="https://images.unsplash.com/photo-1560253023-3ec5d502959f?w=600&q=80" alt="Esports Arena" loading="lazy" />
+    <div class="tb-img-overlay"></div>
+  </div>
+  <div class="tb-content">
+    <div class="tb-lines"></div>
+    <div class="tb-left">
+      <div class="tb-tag">🏆 &nbsp; Global Championship · 2026</div>
+      <div class="tb-title">Stackly World Cup 2026</div>
+      <div class="tb-sub">Register before June 15 &nbsp;·&nbsp; 148 countries &nbsp;·&nbsp; All skill levels welcome</div>
+    </div>
+    <div class="tb-right">
+      <div class="tb-prize-label">Total Prize Pool</div>
+      <div class="tb-prize">$500,000</div>
+      <button class="btn-register">Register Now &nbsp;→</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== FEATURED GAMES ===================== -->
+<section class="section" id="games">
+  <div class="section-header" data-aos="fade-up" data-aos-duration="600">
+    <div class="section-tag">★ &nbsp; Featured</div>
+    <div class="section-title">Top <span>Games</span> This Week</div>
+  </div>
+  <div class="games-grid" id="store">
+    <div class="game-tile" data-aos="fade-up" data-aos-duration="600" data-aos-delay="0"><div class="tag-new">NEW</div><div class="tile-img"><img src="https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?w=500&q=80" alt="Void Runners X" /><div class="tile-overlay"><div class="play-btn">▶</div></div></div><div class="tile-body"><div class="tile-name">Void Runners X</div><div class="tile-meta"><span class="tile-genre">Sci-Fi Shooter</span><span class="tile-rating">★ 9.2</span></div></div><div class="tile-footer"><span class="tile-price">$19.99</span><span class="tile-players">142K playing</span></div></div>
+    <div class="game-tile" data-aos="fade-up" data-aos-duration="600" data-aos-delay="100"><div class="tag-hot">HOT</div><div class="tile-img"><img src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=500&q=80" alt="Dead Protocol" /><div class="tile-overlay"><div class="play-btn">▶</div></div></div><div class="tile-body"><div class="tile-name">Dead Protocol</div><div class="tile-meta"><span class="tile-genre">Survival Horror</span><span class="tile-rating">★ 8.7</span></div></div><div class="tile-footer"><span class="tile-price">$24.99</span><span class="tile-players">89K playing</span></div></div>
+    <div class="game-tile" data-aos="fade-up" data-aos-duration="600" data-aos-delay="200"><div class="tile-img"><img src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=500&q=80" alt="Apex Circuit" /><div class="tile-overlay"><div class="play-btn">▶</div></div></div><div class="tile-body"><div class="tile-name">Apex Circuit</div><div class="tile-meta"><span class="tile-genre">Racing</span><span class="tile-rating">★ 9.5</span></div></div><div class="tile-footer"><span class="tile-free">Free to Play</span><span class="tile-players">320K playing</span></div></div>
+    <div class="game-tile" data-aos="fade-up" data-aos-duration="600" data-aos-delay="300"><div class="tile-img"><img src="https://images.unsplash.com/photo-1535223289827-42f1e9919769?w=500&q=80" alt="Arcane Legends" /><div class="tile-overlay"><div class="play-btn">▶</div></div></div><div class="tile-body"><div class="tile-name">Arcane Legends</div><div class="tile-meta"><span class="tile-genre">MMORPG</span><span class="tile-rating">★ 9.0</span></div></div><div class="tile-footer"><span class="tile-price">$39.99</span><span class="tile-players">520K playing</span></div></div>
+    <div class="game-tile" data-aos="fade-up" data-aos-duration="600" data-aos-delay="400"><div class="tile-img"><img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&q=80" alt="Mech Wars 2077" /><div class="tile-overlay"><div class="play-btn">▶</div></div></div><div class="tile-body"><div class="tile-name">Mech Wars 2077</div><div class="tile-meta"><span class="tile-genre">Strategy</span><span class="tile-rating">★ 8.9</span></div></div><div class="tile-footer"><span class="tile-price">$34.99</span><span class="tile-players">67K playing</span></div></div>
+    <div class="game-tile" data-aos="fade-up" data-aos-duration="600" data-aos-delay="500"><div class="tile-img"><img src="https://images.unsplash.com/photo-1577741314755-048d8525d31e?w=500&q=80" alt="Dragon's Oath" /><div class="tile-overlay"><div class="play-btn">▶</div></div></div><div class="tile-body"><div class="tile-name">Dragon's Oath</div><div class="tile-meta"><span class="tile-genre">Fantasy RPG</span><span class="tile-rating">★ 9.3</span></div></div><div class="tile-footer"><span class="tile-free">Free to Play</span><span class="tile-players">410K playing</span></div></div>
+    <div class="game-tile" data-aos="fade-up" data-aos-duration="600" data-aos-delay="600"><div class="tile-img"><img src="https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=500&q=80" alt="Hunter's Creed" /><div class="tile-overlay"><div class="play-btn">▶</div></div></div><div class="tile-body"><div class="tile-name">Hunter's Creed</div><div class="tile-meta"><span class="tile-genre">Action</span><span class="tile-rating">★ 8.5</span></div></div><div class="tile-footer"><span class="tile-price">$14.99</span><span class="tile-players">53K playing</span></div></div>
+    <div class="game-tile" data-aos="fade-up" data-aos-duration="600" data-aos-delay="700"><div class="tag-new">NEW</div><div class="tile-img"><img src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=500&q=80" alt="BioSphere" /><div class="tile-overlay"><div class="play-btn">▶</div></div></div><div class="tile-body"><div class="tile-name">BioSphere</div><div class="tile-meta"><span class="tile-genre">Simulation</span><span class="tile-rating">★ 8.8</span></div></div><div class="tile-footer"><span class="tile-price">$22.99</span><span class="tile-players">31K playing</span></div></div>
+  </div>
+</section>
+
+<!-- ===================== CATEGORIES ===================== -->
+<section class="section section-alt" id="news">
+  <div class="section-header" data-aos="fade-up" data-aos-duration="600">
+    <div class="section-tag">◈ &nbsp; Browse</div>
+    <div class="section-title">Game <span>Categories</span></div>
+  </div>
+  <div class="cats-grid">
+    <div class="cat-card" data-aos="zoom-in" data-aos-duration="500" data-aos-delay="0"><div class="cat-img-wrap"><img src="https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=400&q=80" alt="Action Games" /><div class="cat-img-overlay"><span class="cat-icon-big">⚔️</span></div></div><div class="cat-body"><div class="cat-name">Action</div><div class="cat-count">2,840 Games</div></div></div>
+    <div class="cat-card" data-aos="zoom-in" data-aos-duration="500" data-aos-delay="80"><div class="cat-img-wrap"><img src="https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&q=80" alt="Puzzle Games" /><div class="cat-img-overlay"><span class="cat-icon-big">🧩</span></div></div><div class="cat-body"><div class="cat-name">Puzzle</div><div class="cat-count">1,200 Games</div></div></div>
+    <div class="cat-card" data-aos="zoom-in" data-aos-duration="500" data-aos-delay="160"><div class="cat-img-wrap"><img src="https://images.unsplash.com/photo-1560253023-3ec5d502959f?w=400&q=80" alt="Sports Games" /><div class="cat-img-overlay"><span class="cat-icon-big">🏆</span></div></div><div class="cat-body"><div class="cat-name">Sports</div><div class="cat-count">960 Games</div></div></div>
+    <div class="cat-card" data-aos="zoom-in" data-aos-duration="500" data-aos-delay="240"><div class="cat-img-wrap"><img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&q=80" alt="Strategy Games" /><div class="cat-img-overlay"><span class="cat-icon-big">🎯</span></div></div><div class="cat-body"><div class="cat-name">Strategy</div><div class="cat-count">1,540 Games</div></div></div>
+    <div class="cat-card" data-aos="zoom-in" data-aos-duration="500" data-aos-delay="320"><div class="cat-img-wrap"><img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=400&q=80" alt="Racing Games" /><div class="cat-img-overlay"><span class="cat-icon-big">🚗</span></div></div><div class="cat-body"><div class="cat-name">Racing</div><div class="cat-count">680 Games</div></div></div>
+    <div class="cat-card" data-aos="zoom-in" data-aos-duration="500" data-aos-delay="400"><div class="cat-img-wrap"><img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80" alt="Arcade Games" /><div class="cat-img-overlay"><span class="cat-icon-big">👾</span></div></div><div class="cat-body"><div class="cat-name">Arcade</div><div class="cat-count">3,100 Games</div></div></div>
+  </div>
+</section>
+
+<!-- ===================== LEADERBOARD ===================== -->
+<section class="section" id="community">
+  <div class="section-header" data-aos="fade-up" data-aos-duration="600">
+    <div class="section-tag">◉ &nbsp; Community</div>
+    <div class="section-title">Global <span>Leaderboard</span></div>
+  </div>
+  <div class="lb-wrapper">
+    <div class="lb-card" data-aos="fade-right" data-aos-duration="700">
+      <div class="lb-header"><div class="lb-header-title">Top Players</div><div class="lb-header-action">View All →</div></div>
+      <div class="lb-row"><div class="lb-rank rank-1">#1</div><div class="lb-avatar"><img src="https://i.pravatar.cc/80?img=11" alt="NightBlade_X" /></div><div class="lb-info"><div class="lb-name">NightBlade_X</div><div class="lb-game">Shadow Realm: Origins</div></div><div class="lb-score">84,220</div></div>
+      <div class="lb-row"><div class="lb-rank rank-2">#2</div><div class="lb-avatar"><img src="https://i.pravatar.cc/80?img=32" alt="QuantumStrike" /></div><div class="lb-info"><div class="lb-name">QuantumStrike</div><div class="lb-game">Void Runners X</div></div><div class="lb-score">79,540</div></div>
+      <div class="lb-row"><div class="lb-rank rank-3">#3</div><div class="lb-avatar"><img src="https://i.pravatar.cc/80?img=57" alt="WraithKing" /></div><div class="lb-info"><div class="lb-name">WraithKing</div><div class="lb-game">Apex Circuit</div></div><div class="lb-score">71,190</div></div>
+      <div class="lb-row"><div class="lb-rank rank-other">#4</div><div class="lb-avatar"><img src="https://i.pravatar.cc/80?img=43" alt="GhostPixel" /></div><div class="lb-info"><div class="lb-name">GhostPixel</div><div class="lb-game">Dead Protocol</div></div><div class="lb-score">68,850</div></div>
+      <div class="lb-row"><div class="lb-rank rank-other">#5</div><div class="lb-avatar"><img src="https://i.pravatar.cc/80?img=68" alt="ArcMaster99" /></div><div class="lb-info"><div class="lb-name">ArcMaster99</div><div class="lb-game">Arcane Legends</div></div><div class="lb-score">65,400</div></div>
+      <div class="lb-row"><div class="lb-rank rank-other">#6</div><div class="lb-avatar"><img src="https://i.pravatar.cc/80?img=22" alt="DragonSlyr" /></div><div class="lb-info"><div class="lb-name">DragonSlyr</div><div class="lb-game">Dragon's Oath</div></div><div class="lb-score">61,100</div></div>
+    </div>
+    <div class="lb-card" data-aos="fade-left" data-aos-duration="700">
+      <div class="lb-header"><div class="lb-header-title">Live Activity</div><div class="lb-header-action"><span class="live-dot"></span>Live Feed</div></div>
+      <div class="lb-row"><div class="lb-avatar"><img src="https://i.pravatar.cc/80?img=57" alt="WraithKing" /></div><div class="lb-info"><div class="lb-name">WraithKing set a new record</div><div class="lb-game">Apex Circuit — 2 min ago</div></div><div style="font-size:12px;color:var(--neon);font-weight:600;flex-shrink:0">+2,400 pts</div></div>
+      <div class="lb-row"><div class="lb-avatar" style="background:rgba(0,255,178,0.05)"><div class="lb-avatar-fallback">🏆</div></div><div class="lb-info"><div class="lb-name">Tournament round started</div><div class="lb-game">Void Runners X — 5 min ago</div></div><div style="font-size:12px;color:#A78BFA;font-weight:600;flex-shrink:0">64 Players</div></div>
+      <div class="lb-row"><div class="lb-avatar"><img src="https://i.pravatar.cc/80?img=11" alt="NightBlade_X" /></div><div class="lb-info"><div class="lb-name">NightBlade_X reached Master</div><div class="lb-game">Shadow Realm — 12 min ago</div></div><div style="font-size:12px;color:#FFD700;font-weight:600;flex-shrink:0">Master</div></div>
+      <div class="lb-row"><div class="lb-avatar" style="background:rgba(74,222,128,0.07)"><div class="lb-avatar-fallback">🎯</div></div><div class="lb-info"><div class="lb-name">Daily challenge is now live</div><div class="lb-game">All Games — 18 min ago</div></div><div style="font-size:12px;color:#4ADE80;font-weight:600;flex-shrink:0">Join</div></div>
+      <div class="lb-row"><div class="lb-avatar"><img src="https://i.pravatar.cc/80?img=68" alt="ArcMaster99" /></div><div class="lb-info"><div class="lb-name">ArcMaster99 won 1v1 duel</div><div class="lb-game">Arcane Legends — 22 min ago</div></div><div style="font-size:12px;color:var(--neon);font-weight:600;flex-shrink:0">+1,100 pts</div></div>
+      <div class="lb-row"><div class="lb-avatar"><img src="https://i.pravatar.cc/80?img=22" alt="DragonSlyr" /></div><div class="lb-info"><div class="lb-name">New Clan "NeonWraiths" formed</div><div class="lb-game">Community — 30 min ago</div></div><div style="font-size:12px;color:#FFD700;font-weight:600;flex-shrink:0">+48 joined</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TESTIMONIALS (NEW) ===================== -->
+<section class="section">
+  <div class="section-header" data-aos="fade-up" data-aos-duration="600">
+    <div class="section-tag">💬 &nbsp; Voices of Victory</div>
+    <div class="section-title">Player <span>Testimonials</span></div>
+  </div>
+  <div class="testimonials-grid">
+    <div class="testimonial-card" data-aos="fade-up" data-aos-duration="600" data-aos-delay="0">
+      <div class="quote-icon">“</div>
+      <div class="testimonial-text">Stackly completely changed the way I experience competitive gaming. The tournament platform is smooth, the community is supportive, and the rewards are insane!</div>
+      <div class="testimonial-author">
+        <img class="author-avatar" src="https://i.pravatar.cc/100?img=13" alt="ApexPredator" />
+        <div class="author-info"><h4>ApexPredator</h4><p>Pro Player · 3 years</p></div>
+      </div>
+      <div class="testimonial-stars">★★★★★</div>
+    </div>
+    <div class="testimonial-card" data-aos="fade-up" data-aos-duration="600" data-aos-delay="120">
+      <div class="quote-icon">“</div>
+      <div class="testimonial-text">I’ve tried many gaming hubs, but Stackly’s interface and live leaderboards keep me coming back. The daily deals and exclusive content are top-tier.</div>
+      <div class="testimonial-author">
+        <img class="author-avatar" src="https://i.pravatar.cc/100?img=28" alt="NebulaQueen" />
+        <div class="author-info"><h4>NebulaQueen</h4><p>Streamer · 1.2M followers</p></div>
+      </div>
+      <div class="testimonial-stars">★★★★★</div>
+    </div>
+    <div class="testimonial-card" data-aos="fade-up" data-aos-duration="600" data-aos-delay="240">
+      <div class="quote-icon">“</div>
+      <div class="testimonial-text">From indie gems to AAA titles, Stackly has it all. The esports events feel professional and the prize pools are no joke. Highly recommend!</div>
+      <div class="testimonial-author">
+        <img class="author-avatar" src="https://i.pravatar.cc/100?img=79" alt="RogueMystic" />
+        <div class="author-info"><h4>RogueMystic</h4><p>Tournament Champion</p></div>
+      </div>
+      <div class="testimonial-stars">★★★★★</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FAQ ACCORDION (NEW) ===================== -->
+<section class="section section-alt">
+  <div class="section-header" data-aos="fade-up" data-aos-duration="600">
+    <div class="section-tag">❓ &nbsp; Got Questions?</div>
+    <div class="section-title">Frequently Asked <span>Questions</span></div>
+  </div>
+  <div class="faq-section" data-aos="zoom-in" data-aos-duration="700">
+    <div class="faq-item">
+      <div class="faq-question">How do I create an account and start playing? <i class="fas fa-chevron-down"></i></div>
+      <div class="faq-answer">Click on "Sign In" or "Play Free" on the top right, fill in your email, verify, and you're ready to explore thousands of games. It takes less than 60 seconds!</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">Are there any hidden fees or subscriptions? <i class="fas fa-chevron-down"></i></div>
+      <div class="faq-answer">Stackly is completely free to join. You can purchase games individually or subscribe to Stackly+ for extra perks, but the core platform (free games, tournaments, community) is 100% free.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">How do tournaments work? <i class="fas fa-chevron-down"></i></div>
+      <div class="faq-answer">We run daily, weekly, and monthly tournaments across many games. Register through the Tournament Hub, compete in brackets, and earn cash prizes, badges, and exclusive skins.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">What platforms does Stackly support? <i class="fas fa-chevron-down"></i></div>
+      <div class="faq-answer">PC (Windows/macOS), PlayStation, Xbox, and cloud gaming via mobile browser. Most games are cross-platform.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">How do I refund a purchase? <i class="fas fa-chevron-down"></i></div>
+      <div class="faq-answer">You can request a refund within 14 days of purchase if you've played less than 2 hours. Visit your account settings → Order History.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== HOT DEALS ===================== -->
+<section class="section">
+  <div class="section-header" data-aos="fade-up" data-aos-duration="600">
+    <div class="section-tag">🔥 &nbsp; Limited Time</div>
+    <div class="section-title">Today's <span>Hot Deals</span></div>
+  </div>
+  <div class="deals-grid">
+    <div class="deal-card" data-aos="fade-up" data-aos-duration="600" data-aos-delay="0"><div class="deal-badge">-75%</div><div class="deal-img-wrap"><img src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600&q=80" alt="Dead Protocol" /></div><div class="deal-body"><div class="deal-name">Dead Protocol</div><div class="deal-genre">Survival Horror</div><div class="deal-prices"><span class="deal-old">$24.99</span><span class="deal-new">$6.24</span></div></div><div class="deal-footer"><span class="deal-rating">★ 8.7</span><button class="deal-btn">Add to Cart</button></div></div>
+    <div class="deal-card" data-aos="fade-up" data-aos-duration="600" data-aos-delay="120"><div class="deal-badge">-60%</div><div class="deal-img-wrap"><img src="https://images.unsplash.com/photo-1535223289827-42f1e9919769?w=600&q=80" alt="Arcane Legends" /></div><div class="deal-body"><div class="deal-name">Arcane Legends</div><div class="deal-genre">MMORPG</div><div class="deal-prices"><span class="deal-old">$39.99</span><span class="deal-new">$15.99</span></div></div><div class="deal-footer"><span class="deal-rating">★ 9.0</span><button class="deal-btn">Add to Cart</button></div></div>
+    <div class="deal-card" data-aos="fade-up" data-aos-duration="600" data-aos-delay="240"><div class="deal-badge">-50%</div><div class="deal-img-wrap"><img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&q=80" alt="Shadow Realm: Origins" /></div><div class="deal-body"><div class="deal-name">Shadow Realm: Origins</div><div class="deal-genre">Action RPG</div><div class="deal-prices"><span class="deal-old">$29.99</span><span class="deal-new">$14.99</span></div></div><div class="deal-footer"><span class="deal-rating">★ 9.4</span><button class="deal-btn">Add to Cart</button></div></div>
+  </div>
+</section>
+
+<!-- ===================== NEWSLETTER ===================== -->
+<section class="newsletter-section">
+  <div class="nl-bg"></div>
+  <div class="nl-overlay"></div>
+  <div class="nl-content" data-aos="zoom-in" data-aos-duration="700">
+    <div class="newsletter-title">Stay in the <span>Game</span></div>
+    <p class="newsletter-sub">Get exclusive deals, tournament alerts, and new game drops straight to your inbox.</p>
+    <div class="newsletter-form">
+      <input type="email" class="newsletter-input" placeholder="Enter your email address..." />
+      <button class="newsletter-btn">Subscribe</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="footer-grid">
+    <div data-aos="fade-up" data-aos-duration="600" data-aos-delay="0">
+      <div class="footer-logo">STACK<span>LY</span></div>
+      <p class="footer-desc">The world's most immersive gaming platform. Compete globally, discover new worlds, and join a community of millions of passionate gamers.</p>
+      <div class="social-row"><button class="social-btn" title="Twitter/X">𝕏</button><button class="social-btn" title="LinkedIn">in</button><button class="social-btn" title="YouTube">▶</button><button class="social-btn" title="Discord">◈</button><button class="social-btn" title="Twitch">📡</button></div>
+    </div>
+    <div data-aos="fade-up" data-aos-duration="600" data-aos-delay="100"><div class="footer-col-title">Games</div><ul class="footer-links"><li><a href="#">Browse All</a></li><li><a href="#">New Releases</a></li><li><a href="#">Top Rated</a></li><li><a href="#">Free to Play</a></li><li><a href="#">On Sale</a></li><li><a href="#">Coming Soon</a></li></ul></div>
+    <div data-aos="fade-up" data-aos-duration="600" data-aos-delay="200"><div class="footer-col-title">Community</div><ul class="footer-links"><li><a href="#">Tournaments</a></li><li><a href="#">Leaderboard</a></li><li><a href="#">Forums</a></li><li><a href="#">Streamers</a></li><li><a href="#">Clans</a></li><li><a href="#">Events</a></li></ul></div>
+    <div data-aos="fade-up" data-aos-duration="600" data-aos-delay="300"><div class="footer-col-title">Company</div><ul class="footer-links"><li><a href="#">About Us</a></li><li><a href="#">Careers</a></li><li><a href="#">Press Kit</a></li><li><a href="#">Partners</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><div class="footer-copy">© 2026 Stackly Gaming Inc. All rights reserved.</div><div class="footer-made">⚡ Built for gamers worldwide</div></div>
+</footer>
+
+<!-- AOS JS + FontAwesome Icons (for FAQ) -->
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script src="https://kit.fontawesome.com/a2b2e2a3e9.js" crossorigin="anonymous"></script>
+<script>
+AOS.init({ once: true, easing: 'ease-out-cubic', offset: 80, duration: 700 });
+
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 40), { passive: true });
+
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburgerBtn.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+mobileMenu.querySelectorAll('a').forEach(l => l.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
+// Particles
+(function() {
+  const c = document.getElementById('particles');
+  const colors = ['#00FFB2','#7C3AED','#FF003C','#FFD700'];
+  for (let i = 0; i < 22; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const s = Math.random() * 5 + 2;
+    p.style.cssText = `width:${s}px;height:${s}px;left:${Math.random()*100}%;bottom:${Math.random()*30}%;background:${colors[Math.floor(Math.random()*colors.length)]};animation-delay:${Math.random()*8}s;animation-duration:${7+Math.random()*6}s`;
+    c.appendChild(p);
+  }
+})();
+
+// FAQ Accordion
+document.querySelectorAll('.faq-item').forEach(item => {
+  const question = item.querySelector('.faq-question');
+  question.addEventListener('click', () => {
+    item.classList.toggle('active');
+  });
+});
+
+// Live score ticker
+setInterval(() => {
+  document.querySelectorAll('.lb-score').forEach(s => {
+    if (Math.random() > 0.6) {
+      const curr = parseInt(s.textContent.replace(/,/g,''));
+      s.textContent = (curr + Math.floor(Math.random()*80)).toLocaleString();
+      s.style.color = '#4ADE80';
+      setTimeout(() => s.style.color = '', 700);
+    }
+  });
+}, 3200);
+
+document.querySelector('.newsletter-btn').addEventListener('click', function() {
+  const input = document.querySelector('.newsletter-input');
+  if (input.value && input.value.includes('@')) {
+    this.textContent = '✓ Subscribed!';
+    this.style.background = '#4ADE80';
+    input.value = '';
+    setTimeout(() => { this.textContent = 'Subscribe'; this.style.background = ''; }, 3000);
+  } else {
+    input.style.borderColor = '#FF003C';
+    setTimeout(() => input.style.borderColor = '', 1500);
+  }
+});
+</script>
+</body>
+</html>
